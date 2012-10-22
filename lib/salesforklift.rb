@@ -1,0 +1,7 @@
+require "salesforklift/logging"
+require "salesforklift/login_response"
+require "salesforklift/job_response"
+require "salesforklift/batch_response"
+require "salesforklift/login"
+require "salesforklift/job"
+require "salesforklift/batch"
