@@ -3,15 +3,15 @@ require 'logger'
 module Salesforklift
   module Logging
 
-    @@defalut_logger = Logger.new(STDOUT)
-    @@defalut_logger.level = Logger::INFO
+    @@default_logger = Logger.new(STDOUT)
+    @@default_logger.level = Logger::DEBUG
     
     def logger
-      @logger ||= @@defalut_logger
+      @logger ||= @@default_logger
     end
 
     def self.logger=(value)
-      @@defalut_logger = value
+      @@default_logger = value
     end
   end
 end

@@ -14,13 +14,7 @@ module Salesforklift
     end
 
     def create_from_file(data_file)
-      batch_content = ""
-      File.open(data_file, "r") do |infile|
-        while (line = infile.gets)
-          batch_content += line
-        end
-      end
-
+      batch_content = IO.read(data_file)
       logger.debug batch_content
       create(batch_content)
     end
@@ -29,9 +23,12 @@ module Salesforklift
       response = RestClient.post("https://#{@server_instance}.salesforce.com/services/async/21.0/job/#{@sf_job_id}/batch",
                                  batch_content.lstrip,
                                 {"Content-Type" => "text/csv;charset=UTF-8", "X-SFDC-Session" => @session_id})
-      return false if (response.code/100 != 2)
-      response = BatchResponse.fromXML(response.body)
-      @batch_id = response.batch_id
+      
+      if response.code / 100 == 2 # 2xx
+        return (@batch_id = BatchResponse.fromXML(response.body).batch_id)
+      else
+        false
+      end
     end
 
     def query_status
@@ -41,9 +38,12 @@ module Salesforklift
       response = http.get("/services/async/21.0/job/#{@sf_job_id}/batch/#{@batch_id}",
                           {"X-SFDC-Session" => @session_id})
 
-      return response.body if response.class != Net::HTTPOK
-
-      return BatchResponse.fromXML(response.body)
+                          
+      if response.class != Net::HTTPOK
+        response.body
+      else
+        BatchResponse.fromXML(response.body)
+      end
     end
 
     def query_result
@@ -52,16 +52,15 @@ module Salesforklift
 
       response = http.get("/services/async/21.0/job/#{@sf_job_id}/batch/#{@batch_id}/result",
                           {"X-SFDC-Session" => @session_id})
-      return response.body if response.class != Net::HTTPOK
-
-      result = Array.new
-      response.body.each_line do |line|
-        one_record = line.split(",")
-        result << {:id => one_record[0], :success => one_record[1],
-                   :created => one_record[2], :error => one_record[3]}
+      
+      if response.class != Net::HTTPOK
+        response.body
+      else  
+        response.body.lines.map do |line|
+          id, success, created, error = line.split(/,/)
+          {id: id, success: success, created: created, error: error}
+        end.drop(1) # drop header
       end
-
-      result.drop(1)  # drop header
     end
 
   end

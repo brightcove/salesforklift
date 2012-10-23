@@ -26,7 +26,7 @@ module Salesforklift
       response = http.post('/services/Soap/u/21.0',
                               loginRequest.lstrip,
                               {"Content-Type" => "text/xml;charset=UTF-8", "SOAPAction" => "login"})
-      
+
       return false if response.class != Net::HTTPOK
 
       return LoginResponse.fromXML(response.body)

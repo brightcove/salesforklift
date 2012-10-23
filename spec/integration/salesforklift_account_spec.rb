@@ -6,8 +6,8 @@ describe Salesforklift::Job do
   it "createa a bulk request to saleforce with real credential and real network" do
     login = Salesforklift::Login.new
     result = login.login_sforce(TEST_USER_NAME, TEST_USER_PW, TEST_LOGIN_URL)    
-    result.class.should eq(Salesforklift::LoginResponse)
-
+    result.should be_a(Salesforklift::LoginResponse)
+    
     job = Salesforklift::Job.new(result.server_instance,
                           result.session_id,
                           "Contact",
@@ -23,6 +23,6 @@ describe Salesforklift::Job do
     batch_response = batch.query_status
     # the result might be a success message with batch ID, or an error 
     # of "Batch not completed" since Salesforce bulk API works asynchronously.
-    batch.query_result.length.should > 0
+    batch.query_result.should_not be_empty
   end
 end
