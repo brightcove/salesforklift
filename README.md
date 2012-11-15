@@ -9,7 +9,7 @@ Salesforce provides Bulk API to ease massive data synchronization from a data st
 gem install salesforklift
 
 ## How to build salesforklift gem (usually you don't need to)
-To build a gem, run ¡®gem build salesforklift.gemspec
+To build a gem, run gem build salesforklift.gemspec
 
 ## How to use salesforklift gem
 
