@@ -4,7 +4,11 @@
 
 Salesforce provides Bulk API to ease massive data synchronization from a data store to salesforce. This project provides a gem to use Salesforce Bulk API in a ruby app.
 
-## How to build salesforklift gem
+
+## Install
+gem install salesforklift
+
+## How to build salesforklift gem (usually you don't need to)
 To build a gem, run ¡®gem build salesforklift.gemspec
 
 ## How to use salesforklift gem
